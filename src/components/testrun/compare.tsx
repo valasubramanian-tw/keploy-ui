@@ -1,7 +1,7 @@
 import React from "react"
 import { GET_TC_META, NORMALISE_TC, TestcaseData, TestQuery } from "../../services/queries"
 import ReactDiffViewer, { DiffMethod } from "react-diff-viewer"
-import { AlertProps, Grid, List, ListItem, ListItemText, Tooltip, Typography } from "@mui/material"
+import { AlertProps, Grid, List, ListItem, ListItemText, Tooltip, Typography, Stack } from "@mui/material"
 import { CheckCircle, Close, Edit } from "@mui/icons-material"
 import { makeStyles } from "@mui/styles"
 import { isJSON } from "../../services/services"
@@ -11,6 +11,7 @@ import { useMutation, useQuery } from "@apollo/client"
 import { navigate } from "gatsby"
 import CustomDialog from "../global/dialog"
 import CustomAlert from "../global/alert"
+import AntSwitch from "../global/antswitch"
 
 export interface CompareViewProps {
   test: TestQuery
@@ -136,11 +137,23 @@ export default function CompareView(props: CompareViewProps) {
       </Grid>
       <Grid container>
         <TabPanel value={value} index={0}>
-          <AntTabs value={valueRes} onChange={handleChangeRes} aria-label="basic tabs example">
-            <AntTab label="Body" {...a11yProps(0)} normal={props.test.result.bodyResult.normal} />
-            <AntTab label="Header" {...a11yProps(1)} normal={(props.test.result.headersResult ? props.test.result.headersResult.filter(hr => (!hr.normal)).length == 0 : true)} />
-            <AntTab label="Parameters" {...a11yProps(2)} normal={props.test.result.statusCode.normal} />
-          </AntTabs>
+          <Grid container direction={"row"}>
+            <Grid item xs={8}>
+              <AntTabs value={valueRes} onChange={handleChangeRes} aria-label="basic tabs example">
+                <AntTab label="Body" {...a11yProps(0)} normal={props.test.result.bodyResult.normal} />
+                <AntTab label="Header" {...a11yProps(1)} normal={(props.test.result.headersResult ? props.test.result.headersResult.filter(hr => (!hr.normal)).length == 0 : true)} />
+                <AntTab label="Parameters" {...a11yProps(2)} normal={props.test.result.statusCode.normal} />
+              </AntTabs>
+            </Grid>
+            <Grid item xs={2} container justifyContent={"flex-end"} alignItems={"center"}>
+              <TabPanel value={valueRes} index={0}>
+                <Stack direction="row" spacing={1} alignItems="center">
+                  <AntSwitch defaultChecked inputProps={{ 'aria-label': 'ant design' }} />
+                  <Typography variant="caption" display="block" gutterBottom>Ignore Noisy Fields</Typography>
+                </Stack>
+              </TabPanel>
+            </Grid>
+          </Grid>
           <Grid container direction={"row"}>
             <TabPanel value={valueRes} index={0}>
               {props.test.result.bodyResult != null && (
